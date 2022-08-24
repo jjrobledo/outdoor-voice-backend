@@ -5,6 +5,13 @@ require("dotenv").config();
 const PORT = process.env.PORT || 5001;
 
 const app = express();
+const postRouter = require("./routes/posts.routes.js");
+const userRouter = require("./routes/users.routes.js");
+
+app.use(express.json());
+
+app.use("/api/users", userRouter);
+app.use("/api/posts", postRouter);
 
 mongoose
   .connect(process.env.MONGO_URI)
