@@ -1,42 +1,37 @@
 const User = require("../models/user.model");
-const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
-async function registerUser(req, res) {
-  // TODO check req.body to make sure there it is not empty
+const generateToken = (_id) => {
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "1d" });
+};
+
+async function loginUser(req, res) {
+  const { email, password } = req.body;
+
   try {
-    const { username, email, password } = req.body;
-    // salt password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    // login user with static method
+    const user = await User.login(email, password);
 
-    const user = await User.create({
-      username: username,
-      email: email,
-      password: hashedPassword,
-    });
-    res.status(200).json(user);
+    const token = generateToken(user._id);
+    // add jwt to headers
+    res.status(200).json({ email, token });
   } catch (error) {
-    res.status(400).json(error);
+    res.status(400).json({ error: error.message });
   }
 }
 
-async function loginUser(req, res) {
-  // TODO check req.body to make sure there it is not empty
+async function registerUser(req, res) {
+  // get new user info from request body
+  const { username, email, password } = req.body;
 
   try {
-    const { username, password } = req.body;
-    // find user
-    const user = await User.findOne({ username });
-    !user && res.status(400).json("Invalid credentials");
+    // create new user with static method
+    const user = await User.signup(username, email, password);
+    const token = generateToken(user._id);
 
-    // check password
-    const validPassword = await bcrypt.compare(password, user.password);
-    !validPassword && res.status(400).json("Invalid credentials");
-
-    // send res
-    res.status(200).json(user);
+    res.status(200).json({ email, token });
   } catch (error) {
-    res.status(400).json(error);
+    res.status(400).json({ error: error.message });
   }
 }
 
