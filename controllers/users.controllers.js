@@ -11,10 +11,10 @@ async function loginUser(req, res) {
   try {
     // login user with static method
     const user = await User.login(email, password);
-
+    const { _id, username } = user;
     const token = generateToken(user._id);
     // add jwt to headers
-    res.status(200).json({ email, token });
+    res.status(200).json({ _id, username, email, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
