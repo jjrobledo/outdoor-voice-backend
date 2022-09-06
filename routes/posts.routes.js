@@ -1,18 +1,17 @@
 const router = require("express").Router();
 const authenticate = require("../middleware/auth.middleware");
-const { getAllPosts, createPost } = require("../controllers/posts.controllers");
+const {
+  getAllPosts,
+  createPost,
+  deletePost,
+  updatePost,
+} = require("../controllers/posts.controllers");
 
 // TODO
 // - protect routes with auth middelware
-// - add patch and delete routes
+router.use(authenticate);
 
-// router.use(authenticate);
-
-router.get("/", getAllPosts);
-
-router.post("/", createPost);
-
-// router.delete("/:id", deletePost);
-// router.patch("/:id", updatePost)
+router.route("/").get(getAllPosts).post(createPost);
+router.route("/:id").patch(updatePost).delete(deletePost);
 
 module.exports = router;

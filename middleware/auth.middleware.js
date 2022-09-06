@@ -9,7 +9,7 @@ const authenticate = async (req, res, next) => {
   }
 
   // split the token string to seperate the token from the string - eg: "bearertoken 2098347s0d98af..."
-  const jwtToken = authorization.split(" "[1]);
+  const jwtToken = authorization.split(" ")[1];
 
   try {
     // check if token is valid
@@ -17,6 +17,7 @@ const authenticate = async (req, res, next) => {
 
     // add user id to request
     req.user = await User.findOne({ _id }).select("_id");
+
     next();
   } catch (error) {
     res.status(401).json({ error: "401 - Unauthorized" });
