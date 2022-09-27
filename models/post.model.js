@@ -17,6 +17,8 @@ const postSchema = new mongoose.Schema(
       min: 3,
       max: 340,
     },
+    image: String,
+    imageId: String,
     lat: {
       type: Number,
       require: true,
