@@ -10,6 +10,12 @@ const PORT = process.env.PORT || 5000;
 
 const app = express();
 
+cloudinary.config({
+  cloud_name: "dvr2dt9kh",
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
 const storage = multer.diskStorage({
   filename: function (req, file, callback) {
     callback(null, Date.now() + file.originalname);
