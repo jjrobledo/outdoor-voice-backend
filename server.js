@@ -28,7 +28,7 @@ const upload = multer({ storage: storage, fileFilter: imageFilter });
 const postRouter = require("./routes/posts.routes.js");
 const userRouter = require("./routes/users.routes.js");
 
-app.use(cors());
+app.use(cors("*"));
 
 app.use(morgan("dev"));
 app.use(express.json({ limit: "5mb" }));
