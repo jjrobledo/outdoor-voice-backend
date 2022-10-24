@@ -1,8 +1,30 @@
+const cloudinary = require("../cloudinary/cloudinary");
 const { default: mongoose } = require("mongoose");
 const Post = require("../models/post.model");
 
 async function createPost(req, res) {
   // TODO check req.body to make sure there it is not empty
+
+  try {
+    const cloudinaryResponse = await cloudinary.uploader.upload(
+      req.body.image,
+      {
+        upload_preset: "nsigned_uploads",
+        allowed_formats: ["png", "jpeg", "jpg", "webp"],
+      },
+      function (error, result) {
+        if (error) {
+          console.log(error);
+        }
+        console.log(result);
+      }
+    );
+
+    req.body.image = cloudinaryResponse.secure_url;
+  } catch (error) {
+    req.body.image = "";
+    res.status(400).json(error);
+  }
 
   try {
     const post = await Post.create(req.body);
